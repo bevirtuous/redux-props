@@ -68,7 +68,7 @@ The function to create the mapped props. The mapped props will be merged with th
 The options object is used to control when the `consume` function should map the props. It will consider 2 keys, `stateChanged` and `propsChanged`, which are both functions.
 
 ##### stateChanged(prevState, nextState)
-Use this function to prevent unecessary updates if the relevant values in the store have not changed. 
+Use this function to prevent unnecessary updates if the relevant values in the store have not changed. 
 
 ##### propsChanged(prevProps, nextProps)
-Use this function to prevent unecessary updates if the component props have not changed. 
+Use this function to prevent unnecessary updates if the component props have not changed. 
