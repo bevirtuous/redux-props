@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import StoreContext from './context';
 
 const defaultMapProps = () => undefined;
-const defaultOptions = null;
 
 /**
- * 
+ *
  */
 class Consume extends React.Component {
   static propTypes = {
@@ -26,7 +25,7 @@ class Consume extends React.Component {
   }
 
   /**
-   * 
+   *
    */
   shouldComponentUpdate(nextProps) {
     const { options, props, state } = this.props;
@@ -36,19 +35,18 @@ class Consume extends React.Component {
     }
 
     if (typeof options.stateChanged === 'function') {
-      const stateChange = options.stateChanged(state, nextProps.state, props);
-      
-      if (!stateChange) {
-        return false;
-      }
+      return options.stateChanged({
+        prevState: state,
+        nextState: nextProps.state,
+        props,
+      });
     }
 
     if (typeof options.propsChanged === 'function') {
-      const propsChange = options.propsChanged(props, nextProps.props);
-
-      if (!propsChange) {
-        return false;
-      }
+      return options.propsChanged({
+        prevProps: props,
+        nextProps: nextProps.props,
+      });
     }
 
     return true;
@@ -71,19 +69,19 @@ class Consume extends React.Component {
       ...mapProps(state, props, dispatch),
     };
 
-    return <Component {...mergedProps} />
+    return <Component {...mergedProps} />;
   }
 }
 
 /**
- * 
- * @param {*} mapProps 
- * @param {*} options 
+ *
+ * @param {*} mapProps
+ * @param {*} options
  */
-const consume = (mapProps = defaultMapProps, options = defaultOptions) => (Component) => {
+function consume({ mapProps = defaultMapProps, ...options }, Component) {
   /**
-   * 
-   * @param {*} props 
+   *
+   * @param {*} props
    */
   const StoreConsumer = props => (
     <StoreContext.Consumer>
@@ -92,7 +90,7 @@ const consume = (mapProps = defaultMapProps, options = defaultOptions) => (Compo
           component={Component}
           dispatch={dispatch}
           mapProps={mapProps}
-          options={options}
+          options={options || null}
           props={props}
           state={state}
         />
@@ -101,6 +99,6 @@ const consume = (mapProps = defaultMapProps, options = defaultOptions) => (Compo
   );
 
   return StoreConsumer;
-};
+}
 
 export default consume;

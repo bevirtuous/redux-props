@@ -1,10 +1,20 @@
 {
   "presets": [
-    "env"
+    "env", "react"
   ],
   "plugins": [
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-react-jsx"
+    "transform-react-jsx",
+    "transform-export-extensions",
+    "transform-es2015-modules-umd",
+    [
+      "transform-runtime",
+      {
+        "helpers": false,
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
   ]
 }
