@@ -6,9 +6,7 @@
   "description": "Consume a Redux store inside React components.",
   "main": "./dist/index.js",
   "scripts": {
-    "build:src": "NODE_ENV=production babel src --out-dir dist --no-comments",
-    "build:index": "NODE_ENV=production babel index.js --out-dir dist --no-comments",
-    "build": "rm -rf dist/ && npm run build:src && npm run build:index",
+    "build": "rm -rf dist/ && NODE_ENV=production babel src --out-dir dist --no-comments",
     "release": "npm run build && git add -A",
     "postrelease": "git push && git push --tags && npm publish",
     "release:beta": "npm run build && git add -A",
