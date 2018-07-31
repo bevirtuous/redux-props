@@ -15,8 +15,7 @@ A tiny package to connect React components to a Redux store.
   * [Provider](#provider)
   * [consume](#consume)
     * [mapProps](#mapprops-state-props-dispatch-)
-    * [stateChanged](#statechanged-prevstate-nextstate-)
-    * [propsChanged](#propschanged-prevprops-nextprops-)
+    * [options](#options-statechanged-propschanged-)
 
 ## Installation
 
