@@ -4,6 +4,6 @@ module.exports = {
   ...jestConfig,
   testURL: 'http://locahost/',
   collectCoverageFrom: [
-    'src/*/**/*.{js|jsx}',
+    'src/**/*.{js|jsx}',
   ],
 };

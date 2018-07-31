@@ -24,6 +24,7 @@ export class Provider extends Component {
    */
   render() {
     const { store, children } = this.props;
+
     const value = {
       dispatch: store.dispatch,
       state: store.getState(),

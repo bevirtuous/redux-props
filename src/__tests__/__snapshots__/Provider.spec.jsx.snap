@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Provider /> it should render with a proper store 1`] = `
+<[object Object]
+  value={
+    Object {
+      "dispatch": [Function],
+      "state": undefined,
+    }
+  }
+>
+  <div>
+    Some
+  </div>
+</[object Object]>
+`;

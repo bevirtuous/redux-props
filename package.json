@@ -12,7 +12,10 @@
     "release:beta": "npm run build && git add -A",
     "postrelease:beta": "git push && git push --tags && npm publish --tag=beta",
     "test": "jest",
-    "cover": "jest --coverage"
+    "test:watch": "jest --watch",
+    "cover": "jest --coverage",
+    "cover:dev": "jest --no-cache --coverage",
+    "postcover:dev": "http-server ./coverage/lcov-report -p 8081 -o -g -c-1"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "coveralls": "^3.0.2",
+    "http-server": "^0.11.1",
     "jest": "^23.3.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
