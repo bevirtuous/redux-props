@@ -6,14 +6,17 @@
 
 A tiny package to connect React components to a Redux store.
 
+* [Setup](#setup)
+* [Usage](#usage)
+  * [Basic example](#basic-example)
+  * [Using `reselect` for memoization](#simple-example)
+  * [Advanced `reselect` example](#simple-example)
 * [API](#api)
   * [Provider](#provider)
   * [consume](#consume)
-    * [mapProps](#mapprops))
-    * [stateChanged](#statechanged))
-    * [propsChanged](#propschanged)
-* [Usage](#usage)
-  * [Simple example](#simple-example)
+    * [mapProps](#mapprops-state-props-dispatch-)
+    * [stateChanged](#statechanged-prevstate-nextstate-)
+    * [propsChanged](#propschanged-prevprops-nextprops-)
 
 ## Installation
 
@@ -21,35 +24,9 @@ A tiny package to connect React components to a Redux store.
 npm i redux-props -S
 ```
 
-## API
+## Setup
 
-### Provider
-
-The Provider component exposes the store to your React component tree. It must receive a Redux store instance via the `store` prop.
-
-### consume
-
-The consume function is used to inject props, derived from the store, into a React component. The function accepts two parameters `mapProps` and `options`. By default, each consume function will map props each time the Redux store is updated. This can be controlled by the `options` parameter.
-
-#### mapProps({ state, props, dispatch })
-
-The function to create the mapped props. The mapped props will be merged with the component props. In the case of a naming conflict, the mapped props will override the component props.
-
-> The mapProps function will only be called once the `stateChanged` and `propsChanged` options have passed.
-
-#### stateChanged({ prevState, nextState })
-
-Use this function to prevent unnecessary updates if the relevant values in the store have not changed.
-
-#### propsChanged({ prevProps, nextProps })
-
-Use this function to prevent unnecessary updates if the component props have not changed.
-
-## Usage
-
-### Simple example
-
-Install the Provider at the top of your React tree.
+Before using the `consume` functio, you must setup the `Provider` at the top of your React tree:
 
 ```jsx
 import { createStore } from 'redux';
@@ -66,64 +43,69 @@ const App = () => (
 export default App;
 ```
 
-Consume the store inside a component.
+## Usage
+
+### Basic example
+
+This example will inject a prop named `content` into the component `MyComponent`.
 
 ```jsx
+// MyComponent.js
 import React from 'react';
-import { consume } from 'redux-props';
+import consume from './consumer';
 
-// A little React component.
 const MyComponent = ({ content }) => (
   <div>{content}</div>
 );
 
-// Function to map props from the state.
+export default consume(MyComponent);
+```
+
+```js
+// consumer.js
+import { consume } from 'redux-props';
+
 const mapProps = ({ state }) => ({
   content: state.messages.greeting,
 });
 
-// Only update when the value of the mapped prop has changed.
 const stateChanged = ({ prevState, nextState }) => (
   prevState.messages.greeting !== nextState.messages.greeting
 );
 
-// Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged })(MyComponent);
+export default consume({ mapProps, stateChanged });
 ```
 
-### Using `reselect` for simple selectors
+### Using `reselect` for memoization
+
+Using the simple example but with changes to the `consumer.js` file and a new file to consider called `selectors.js`.
 
 ```js
-import React from 'react';
-import { createSelector } from 'reselect';
+// consumer.js
 import { consume } from 'redux-props';
+import { getGreeting } from './selectors';
 
-// A little React component.
-const MyComponent = ({ content }) => (
-  <div>{content}</div>
-);
-
-// Grab the messages state.
-const getMessagesState = state => state.messages;
-
-// Greb the greeting message.
-const getGreeting = createSelector(
-  getMessagesState,
-  messages => messages.greeting
-)
-
-// Function to map props from the state.
 const mapProps = ({ state }) => ({
   content: getGreeting(state),
 });
 
-// Only update when the value of the mapped prop has changed.
 const stateChanged = ({ prevState, nextState }) => (
   getGreeting(prevState) !== getGreeting(nextState)
 );
 
-// Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged })(MyComponent);
+export default consume({ mapProps, stateChanged });
+```
+
+```js
+// selectors.js
+import { createSelector } from 'reselect';
+
+const getMessagesState = state => state.messages;
+
+export const getGreeting = createSelector(
+  getMessagesState,
+  messages => messages.greeting || null
+);
 ```
 
 ### Usage `reselect` with performance in mind
@@ -182,3 +164,26 @@ const MyComponent = ({ content }) => (
 
 export default consume(MyComponent);
 ```
+## API
+
+### Provider
+
+The Provider component exposes the store to your React component tree. It must receive a Redux store instance via the `store` prop.
+
+### consume
+
+The consume function is used to inject props, derived from the store, into a React component. The function accepts two parameters `mapProps` and `options`. By default, each consume function will map props each time the Redux store is updated. This can be controlled by the `options` parameter.
+
+#### mapProps({ state, props, dispatch })
+
+The function to create the mapped props. The mapped props will be merged with the component props. In the case of a naming conflict, the mapped props will override the component props.
+
+> The mapProps function will only be called once the `stateChanged` and `propsChanged` options have passed.
+
+#### stateChanged({ prevState, nextState })
+
+Use this function to prevent unnecessary updates if the relevant values in the store have not changed.
+
+#### propsChanged({ prevProps, nextProps })
+
+Use this function to prevent unnecessary updates if the component props have not changed.
