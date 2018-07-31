@@ -4,10 +4,16 @@
 [![Coverage Status](https://coveralls.io/repos/github/bevirtuous/redux-props/badge.svg?branch=master)](https://coveralls.io/github/bevirtuous/redux-props?branch=master)
 [![GitHub (pre-)release](https://img.shields.io/github/release/bevirtuous/redux-props/all.svg)](https://github.com/bevirtuous/redux-props/releases)
 
-* [API](#api)
-* [Usage](#usage)
-
 A tiny package to connect React components to a Redux store.
+
+* [API](#api)
+  * [Provider](#provider)
+  * [consume](#consume)
+    * [mapProps](#mapprops))
+    * [stateChanged](#statechanged))
+    * [propsChanged](#propschanged)
+* [Usage](#usage)
+  * [Simple example](#simple-example)
 
 ## Installation
 
@@ -41,7 +47,7 @@ Use this function to prevent unnecessary updates if the component props have not
 
 ## Usage
 
-### Basic example
+### Simple example
 
 Install the Provider at the top of your React tree.
 
