@@ -4,6 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/bevirtuous/redux-props/badge.svg?branch=master)](https://coveralls.io/github/bevirtuous/redux-props?branch=master)
 [![GitHub (pre-)release](https://img.shields.io/github/release/bevirtuous/redux-props/all.svg)](https://github.com/bevirtuous/redux-props/releases)
 
+* [API](#api)
+* [Usage](#usage)
+
 A tiny package to connect React components to a Redux store.
 
 ## Installation
@@ -12,11 +15,35 @@ A tiny package to connect React components to a Redux store.
 npm i redux-props -S
 ```
 
+## API
+
+### Provider
+
+The Provider component exposes the store to your React component tree. It must receive a Redux store instance via the `store` prop.
+
+### consume
+
+The consume function is used to inject props, derived from the store, into a React component. The function accepts two parameters `mapProps` and `options`. By default, each consume function will map props each time the Redux store is updated. This can be controlled by the `options` parameter.
+
+#### mapProps({ state, props, dispatch })
+
+The function to create the mapped props. The mapped props will be merged with the component props. In the case of a naming conflict, the mapped props will override the component props.
+
+> The mapProps function will only be called once the `stateChanged` and `propsChanged` options have passed.
+
+#### stateChanged({ prevState, nextState })
+
+Use this function to prevent unnecessary updates if the relevant values in the store have not changed.
+
+#### propsChanged({ prevProps, nextProps })
+
+Use this function to prevent unnecessary updates if the component props have not changed.
+
 ## Usage
 
 ### Basic example
 
-Install the Provider as a top-level component in your application.
+Install the Provider at the top of your React tree.
 
 ```jsx
 import { createStore } from 'redux';
@@ -149,27 +176,3 @@ const MyComponent = ({ content }) => (
 
 export default consume(MyComponent);
 ```
-
-## API
-
-### Provider
-
-The Provider component exposes the store to your React component tree. It must receive a Redux store instance via the `store` prop.
-
-### consume
-
-The consume function is used to inject props, derived from the store, into a React component. The function accepts two parameters `mapProps` and `options`. By default, each consume function will map props each time the Redux store is updated. This can be controlled by the `options` parameter.
-
-#### mapProps({ state, props, dispatch })
-
-The function to create the mapped props. The mapped props will be merged with the component props. In the case of a naming conflict, the mapped props have priority.
-
-> The mapProps function will only be called once the `stateChanged` and `propsChanged` options have passed.
-
-#### stateChanged({ prevState, nextState })
-
-Use this function to prevent unnecessary updates if the relevant values in the store have not changed.
-
-#### propsChanged({ prevProps, nextProps })
-
-Use this function to prevent unnecessary updates if the component props have not changed.
