@@ -9,8 +9,8 @@ A tiny package to connect React components to a Redux store.
 * [Setup](#setup)
 * [Usage](#usage)
   * [Basic example](#basic-example)
-  * [Using `reselect` for memoization](#simple-example)
-  * [Advanced `reselect` example](#simple-example)
+  * [Using `reselect` for memoization](#using-reselect-for-memoization)
+  * [Advanced `reselect` using shared selectors](#advanced-reselect-using-shared-selectors)
 * [API](#api)
   * [Provider](#provider)
   * [consume](#consume)
@@ -50,7 +50,9 @@ export default App;
 This example will inject a prop named `content` into the component `MyComponent`.
 
 ```jsx
-// MyComponent.js
+/**
+ * MyComponent.js
+ */
 import React from 'react';
 import consume from './consumer';
 
@@ -62,7 +64,9 @@ export default consume(MyComponent);
 ```
 
 ```js
-// consumer.js
+/**
+ * consumer.js
+ */
 import { consume } from 'redux-props';
 
 const mapProps = ({ state }) => ({
@@ -81,7 +85,9 @@ export default consume({ mapProps, stateChanged });
 Using the simple example but with changes to the `consumer.js` file and a new file to consider called `selectors.js`.
 
 ```js
-// consumer.js
+/**
+ * consumer.js
+ */
 import { consume } from 'redux-props';
 import { getGreeting } from './selectors';
 
@@ -97,7 +103,9 @@ export default consume({ mapProps, stateChanged });
 ```
 
 ```js
-// selectors.js
+/**
+ * selectors.js
+ */
 import { createSelector } from 'reselect';
 
 const getMessagesState = state => state.messages;
@@ -108,62 +116,45 @@ export const getGreeting = createSelector(
 );
 ```
 
-### Usage `reselect` with performance in mind
+### Advanced `reselect` using shared selectors
 
-If you are interested in performance optimization you can also use
-reselect's selector creators.
+This examples shows how to use `redux-props` with selectors that are shared between multiple component instances.
 
 ```js
+/**
+ * consumer.js
+ */
+import { consume } from 'redux-props';
+import { makeGetGreeting } from './selectors';
 
+const getGreeting = makeGetGreeting();
+
+const mapProps = ({ state }) => ({
+  content: getGreetings(state),
+});
+
+const stateChanged = ({ prevState, nextState }) => (
+  getGreetings(prevState) !== getGreetings(nextState)
+);
+
+export default consume({ mapProps, stateChanged });
+```
+
+```js
 /**
  * selectors.js
  */
 import { createSelector } from 'reselect';
 
-// Grab the messages state.
 const getMessagesState = state => state.messages;
 
-// Grab the greeting message.
 export const makeGetGreeting = () => createSelector(
   getMessagesState,
   messages => messages.greeting
 );
 
-/**
- * MyComponentContainer.js
- */
-import { consume } from 'redux-props';
-import { makeGetGreeting } from './selectors';
-import MyComponent from './MyComponent';
-
-// Create a new instance of the selector.
-const getGreeting = makeGetGreeting();
-
-// Function to map props from the state.
-const mapProps = ({ state }) => ({
-  content: getGreetings(state),
-});
-
-// Only update when the value of the mapped prop has changed.
-const stateChanged = ({ prevState, nextState }) => (
-  getGreetings(prevState) !== getGreetings(nextState)
-);
-
-// Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged });
-
-/**
- * MyComponent.js
- */
-import React from 'react';
-import consume from './consumer';
-
-const MyComponent = ({ content }) => (
-  <div>{content}</div>
-);
-
-export default consume(MyComponent);
 ```
+
 ## API
 
 ### Provider
@@ -178,12 +169,16 @@ The consume function is used to inject props, derived from the store, into a Rea
 
 The function to create the mapped props. The mapped props will be merged with the component props. In the case of a naming conflict, the mapped props will override the component props.
 
-> The mapProps function will only be called once the `stateChanged` and `propsChanged` options have passed.
+> The `mapProps` function will only be called once the `stateChanged` and `propsChanged` options have passed.
 
-#### stateChanged({ prevState, nextState })
+#### options({ stateChanged, propsChanged })
+
+You can use the `options` to prevent unnecessary updates when unrelated parts of the store change.
+
+##### stateChanged({ prevState, nextState })
 
 Use this function to prevent unnecessary updates if the relevant values in the store have not changed.
 
-#### propsChanged({ prevProps, nextProps })
+##### propsChanged({ prevProps, nextProps })
 
 Use this function to prevent unnecessary updates if the component props have not changed.
