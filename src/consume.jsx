@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import StoreContext from './context';
-
-const defaultMapProps = () => undefined;
+import { StoreContext } from './context';
 
 /**
- *
+ * @return {undefined}
+ */
+const defaultMapProps = () => ({});
+
+/**
+ * The consume HOC.
  */
 class Consume extends React.Component {
   static propTypes = {
@@ -25,7 +28,8 @@ class Consume extends React.Component {
   }
 
   /**
-   *
+   * @param {Object} nextProps The next component props.
+   * @returns {boolean}
    */
   shouldComponentUpdate(nextProps) {
     const { options, props, state } = this.props;
@@ -35,18 +39,26 @@ class Consume extends React.Component {
     }
 
     if (typeof options.stateChanged === 'function') {
-      return options.stateChanged({
+      const stateChanged = options.stateChanged({
         prevState: state,
         nextState: nextProps.state,
         props,
       });
+
+      if (!stateChanged) {
+        return false;
+      }
     }
 
     if (typeof options.propsChanged === 'function') {
-      return options.propsChanged({
+      const stateChanged = options.propsChanged({
         prevProps: props,
         nextProps: nextProps.props,
       });
+
+      if (!stateChanged) {
+        return false;
+      }
     }
 
     return true;
@@ -66,7 +78,11 @@ class Consume extends React.Component {
 
     const mergedProps = {
       ...props,
-      ...mapProps(state, props, dispatch),
+      ...mapProps({
+        state,
+        props,
+        dispatch,
+      }),
     };
 
     return <Component {...mergedProps} />;
@@ -75,9 +91,11 @@ class Consume extends React.Component {
 
 /**
  * @param {Object} props The consumer properties.
- * @return {Function}
+ * @returns {Function}
  */
-function consume({ mapProps = defaultMapProps, ...options }) {
+export function consume({ mapProps = defaultMapProps, ...options }) {
+  const consumeOptions = Object.keys(options).length ? options : null;
+
   return (Component) => {
     /**
      * @param {Object} props The StoreConsumer props.
@@ -90,7 +108,7 @@ function consume({ mapProps = defaultMapProps, ...options }) {
             component={Component}
             dispatch={dispatch}
             mapProps={mapProps}
-            options={options || null}
+            options={consumeOptions}
             props={props}
             state={state}
           />
@@ -101,5 +119,3 @@ function consume({ mapProps = defaultMapProps, ...options }) {
     return StoreConsumer;
   };
 }
-
-export default consume;

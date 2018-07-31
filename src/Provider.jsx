@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import StoreContext from './context';
+import { StoreContext } from './context';
 
 /**
- * 
+ * The store provider.
  */
-class StoreProvider extends Component {
+export class Provider extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
+    store: PropTypes.shape().isRequired,
   };
 
   /**
-   * 
-   * @param {*} props 
+   * @param {Object} props The component props.
    */
   constructor(props) {
     super(props);
@@ -20,20 +20,19 @@ class StoreProvider extends Component {
   }
 
   /**
-   * 
+   * @return {JSX}
    */
   render() {
+    const { store, children } = this.props;
+    const value = {
+      dispatch: store.dispatch,
+      state: store.getState(),
+    };
+
     return (
-      <StoreContext.Provider
-        value={{
-          dispatch: this.props.store.dispatch,
-          state: this.props.store.getState(),
-        }}
-      >
-        {this.props.children}
+      <StoreContext.Provider value={value}>
+        {children}
       </StoreContext.Provider>
     );
   }
 }
-
-export default StoreProvider;
