@@ -1,5 +1,9 @@
 # redux-props
 
+[![Build Status](https://travis-ci.org/bevirtuous/redux-props.svg?branch=master)](https://travis-ci.org/bevirtuous/redux-props)
+[![Coverage Status](https://coveralls.io/repos/github/bevirtuous/redux-props/badge.svg?branch=master)](https://coveralls.io/github/bevirtuous/redux-props?branch=master)
+[![GitHub (pre-)release](https://img.shields.io/github/release/bevirtuous/redux-props/all.svg)](https://github.com/bevirtuous/redux-props/releases)
+
 A tiny package to connect React components to a Redux store.
 
 ## Installation

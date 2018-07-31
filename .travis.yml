@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- 8.10.0
+script: npm run cover --maxWorkers=4 --ci
+# Send coverage report to coveralls.io
+after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+notifications:
+  slack: virtuous-coding:qsxYU1TMf0AAzcCALg4C8t17
+  email: false
+branches:
+  only:
+  - master
