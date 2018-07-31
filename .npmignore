@@ -2,3 +2,7 @@
 .eslintrc
 .eslintignore
 src
+__tests__
+jest.config.js
+.travis.yml
+./index.js
