@@ -74,31 +74,32 @@ class Consume extends React.Component {
 }
 
 /**
- *
- * @param {*} mapProps
- * @param {*} options
+ * @param {Object} props The consumer properties.
+ * @return {Function}
  */
-function consume({ mapProps = defaultMapProps, ...options }, Component) {
-  /**
-   *
-   * @param {*} props
-   */
-  const StoreConsumer = props => (
-    <StoreContext.Consumer>
-      {({ dispatch, state }) => (
-        <Consume
-          component={Component}
-          dispatch={dispatch}
-          mapProps={mapProps}
-          options={options || null}
-          props={props}
-          state={state}
-        />
-      )}
-    </StoreContext.Consumer>
-  );
+function consume({ mapProps = defaultMapProps, ...options }) {
+  return (Component) => {
+    /**
+     * @param {Object} props The StoreConsumer props.
+     * @return {JSX}
+     */
+    const StoreConsumer = props => (
+      <StoreContext.Consumer>
+        {({ dispatch, state }) => (
+          <Consume
+            component={Component}
+            dispatch={dispatch}
+            mapProps={mapProps}
+            options={options || null}
+            props={props}
+            state={state}
+          />
+        )}
+      </StoreContext.Consumer>
+    );
 
-  return StoreConsumer;
+    return StoreConsumer;
+  };
 }
 
 export default consume;

@@ -51,7 +51,7 @@ const stateChanged = ({ prevState, nextState }) => (
 );
 
 // Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged }, MyComponent);
+export default consume({ mapProps, stateChanged })(MyComponent);
 ```
 
 ### Using `reselect` for simple selectors
@@ -86,7 +86,7 @@ const stateChanged = ({ prevState, nextState }) => (
 );
 
 // Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged }, MyComponent);
+export default consume({ mapProps, stateChanged })(MyComponent);
 ```
 
 ### Usage `reselect` with performance in mind
@@ -95,14 +95,6 @@ If you are interested in performance optimization you can also use
 reselect's selector creators.
 
 ```js
-/**
- * MyComponent.js
- */
-import React from 'react';
-
-export default const MyComponent = ({ content }) => (
-  <div>{content}</div>
-);
 
 /**
  * selectors.js
@@ -139,7 +131,19 @@ const stateChanged = ({ prevState, nextState }) => (
 );
 
 // Wrap the component with the consumer on export.
-export default consume({ mapProps, stateChanged }, MyComponent);
+export default consume({ mapProps, stateChanged });
+
+/**
+ * MyComponent.js
+ */
+import React from 'react';
+import consume from './consumer';
+
+const MyComponent = ({ content }) => (
+  <div>{content}</div>
+);
+
+export default consume(MyComponent);
 ```
 
 ## API
