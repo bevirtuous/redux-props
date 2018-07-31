@@ -25,7 +25,7 @@ npm i redux-props -S
 
 ## Setup
 
-Before using the `consume` functio, you must setup the `Provider` at the top of your React tree:
+Before using the `consume` function, you must setup the `Provider` at the top of your React tree:
 
 ```jsx
 import { createStore } from 'redux';
